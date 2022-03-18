@@ -53,3 +53,15 @@ class ModmailConversationsListing(Listing):
             return self.conversations[-1].id
         except IndexError:
             return None
+
+class ModNoteListing(Listing):
+    """Special Listing for handling :class:`.Modnote` lists."""
+
+    CHILD_ATTRIBUTE = "mod_notes"
+
+    @property
+    def after(self) -> Optional[str]:
+        """Return the next attribute or ``None``."""
+        if not getattr(self, "has_next_page", True):
+            return None
+        return getattr(self, "end_cursor", None)

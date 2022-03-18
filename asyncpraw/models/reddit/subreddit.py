@@ -268,6 +268,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditRelationship(self, "banned")
 
     @cachedproperty
+    def notes(self) -> "asyncpraw.models.reddit.subreddit.ModNotes":
+        """Provide an instance of :class:`.ModNotes`.
+
+        TODO
+        """
+        return ModNotes(self)
+
+
+    @cachedproperty
     def collections(self) -> "asyncpraw.models.reddit.collections.SubredditCollections":
         r"""Provide an instance of :class:`.SubredditCollections`.
 
@@ -3041,6 +3050,53 @@ class SubredditRelationship:
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         await self.subreddit._reddit.post(url, data=data)
 
+class ModNotes:
+    """TODO
+
+    """
+
+    async def __call__(
+            self,
+            redditor: Optional[Union[str, "asyncpraw.models.Redditor"]],
+            **generator_kwargs: Any,
+    ) -> AsyncIterator["asyncpraw.models.ModNote"]:
+        """TODO
+        """
+        Subreddit._safely_add_arguments(generator_kwargs, "params", subreddit=self.subreddit, user=redditor)
+        url = API_PATH["modnotes"]
+        return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
+
+    def __init__(self, subreddit: "asyncpraw.models.Subreddit"):
+        """TODO
+        """
+        self.subreddit = subreddit
+
+    async def add(
+            self,
+            redditor: Union[str, "asyncpraw.models.Redditor"],
+            note: str,
+            label: str = None,
+            reddit_id: str = None,
+            **other_settings: Any
+    ):
+        """TODO
+
+        questions: label has to be one of "BOT_BAN, PERMA_BAN, BAN, ABUSE_WARNING, SPAM_WARNING, SPAM_WATCH, SOLID_CONTRIBUTOR, HELPFUL_USER"
+            should that be validated before sending?
+        reddit_id is a comment or submission fullname. Should we take in a comment/submission object here and grab the fullname from it? Or just have this field and let users pass the fullname manually
+        note itself has a max length of 250 characters. Should we check that before sending?
+        """
+        data = {"user": str(redditor), "subreddit": str(self.subreddit), "note": note, "label": label, "reddit_id": reddit_id}
+        data.update(other_settings)
+        url = API_PATH["modnotes"]
+        return self.subreddit._reddit.post(url, data=data)
+
+    async def remove(self, redditor: Union[str, "asyncpraw.models.Redditor"], note_id: str):
+        """TODO
+        """
+        data = {"name": str(redditor), "note_id": note_id}
+        url = API_PATH["modnotes"]
+        return self.subreddit._reddit.delete(url, data=data)
 
 class ContributorRelationship(SubredditRelationship):
     r"""Provides methods to interact with a :class:`.Subreddit`'s contributors.

@@ -60,3 +60,4 @@ from .stylesheet import Stylesheet
 from .subreddits import Subreddits
 from .trophy import Trophy
 from .user import User
+from .mod_note import ModNote

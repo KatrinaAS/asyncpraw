@@ -151,6 +151,12 @@ class Objector:
             data["display_name"] = data["name"]
             del data["name"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+        elif {"mod_action_data", "user_note_data"}.issubset(data):
+            parser = self.parsers["ModNote"]
+        elif "created" in data and {"mod_action_data", "user_note_data"}.issubset(data["created"]):
+            # kinda awkward. The mod notes create endpoint returns a json like {"created": {...note...
+            data = data["created"]
+            parser = self.parsers["ModNote"]
         elif {"authorFlairType", "name"}.issubset(data):
             # discards flair information
             parser = self.parsers[self._reddit.config.kinds["redditor"]]

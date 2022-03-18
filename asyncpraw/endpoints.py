@@ -123,6 +123,7 @@ API_PATH = {
     "modmail_unmute":          "api/mod/conversations/{id}/unmute",
     "modmail_unread":          "api/mod/conversations/unread",
     "modmail_unread_count":    "api/mod/conversations/unread/count",
+    "modnotes":                "api/mod/notes",
     "morechildren":            "api/morechildren/",
     "multireddit":             "user/{user}/m/{multi}/",
     "multireddit_api":         "api/multi/user/{user}/m/{multi}/",

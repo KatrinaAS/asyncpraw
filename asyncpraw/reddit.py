@@ -538,6 +538,7 @@ class Reddit:
             "ModmailConversation": models.ModmailConversation,
             "ModmailConversations-list": models.ModmailConversationsListing,
             "ModmailMessage": models.ModmailMessage,
+            "ModNote": models.ModNote,
             "Submenu": models.Submenu,
             "TrophyList": models.TrophyList,
             "UserList": models.RedditorList,

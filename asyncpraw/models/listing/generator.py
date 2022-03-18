@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, AsyncIterator, Dict, Optional, Union
 
 from ..base import AsyncPRAWBase
-from .listing import FlairListing
+from .listing import FlairListing, ModNoteListing
 
 if TYPE_CHECKING:  # pragma: no cover
     import asyncpraw
@@ -74,7 +74,10 @@ class ListingGenerator(AsyncPRAWBase, AsyncIterator):
         if isinstance(self._listing, list):
             self._listing = self._listing[1]  # for submission duplicates
         elif isinstance(self._listing, dict):
-            self._listing = FlairListing(self._reddit, self._listing)
+            if FlairListing.CHILD_ATTRIBUTE in self._listing:
+                self._listing = FlairListing(self._reddit, self._listing)
+            elif ModNoteListing.CHILD_ATTRIBUTE in self._listing:
+                self._listing = ModNoteListing(self._reddit, self._listing)
         self._list_index = 0
 
         if not self._listing:
